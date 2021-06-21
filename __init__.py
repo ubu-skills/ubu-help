@@ -2,7 +2,7 @@ import sys
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler  # type: ignore
 sys.path.append("/usr/lib/UBUVoiceAssistant")  # type: ignore
-from UBUVoiceAssistant.util import util  # type: ignore
+from util import util  # type: ignore
 
 
 class UbuHelpSkill(MycroftSkill):
