@@ -2,6 +2,7 @@ import sys
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler  # type: ignore
 from mycroft.audio import wait_while_speaking
+from fuzzywuzzy import fuzz, process
 sys.path.append("/usr/lib/UBUVoiceAssistant")  # type: ignore
 from UBUVoiceAssistant.util import util  # type: ignore
 
@@ -23,21 +24,25 @@ class UbuHelpSkill(MycroftSkill):
     @intent_handler(IntentBuilder("HowDoIIntent").require("Accion"))
     def howDoI(self, message):
         accion = message.data.get("Accion")
-        accion_dialog = {
-            "enviar un mensaje": "send.messages.dialog",
-            "envío un mensaje": "send.messages.dialog",
-            "consultar los foros": "forums.dialog",
-            "leer los foros": "forums.dialog",
-            "consulto los foros": "forums.dialog",
-            "leo los foros": "forums.dialog",
-            "consulto el calendario": "calendar.events.dialog",
-            "consulto los eventos": "calendar.events.dialog",
-            "leo los mensajes": "receive.messages.dialog",
-            "veo los cambios": "course.changes.dialog",
-            "consulto las notas": "grades.dialog",
-            "veo mis notas": "grades.dialog",
-            "veo mis calificaciones": "grades.dialog",
-        }
+        translated = self.translate_list("actionslist")
+        action_dialog = {}
+        it = iter(translated)
+        try:
+            for dialog in [
+                "send.messages.dialog",
+                "forums.dialog",
+                "calendar.events.dialog",
+                "receive.messages.dialog",
+                "course.changes.dialog",
+                "grades.dialog"
+            ]:
+                action_dialog[dialog] = next(it)
+                action_dialog[dialog+" "] = next(it)
+        except StopIteration:
+            pass
+        dialog = process.extractOne(accion, action_dialog, scorer=fuzz.ratio, score_cutoff=60)
+        self.speak_dialog(str(dialog[0]).strip())
+
 
     @intent_handler(IntentBuilder("ActionsIntent").require("WhatCanYouDo"))
     def actionsList(self, message):
