@@ -17,7 +17,7 @@ class UbuHelpSkill(MycroftSkill):
 
     @intent_handler(IntentBuilder("HelpIntent").require("Help"))
     def help(self, message):
-        self.speak_dialog("help.dialog")
+        self.speak_dialog("help")
         wait_while_speaking()
         self.actionsList(message)
 
@@ -46,7 +46,7 @@ class UbuHelpSkill(MycroftSkill):
 
     @intent_handler(IntentBuilder("ActionsIntent").require("WhatCanYouDo"))
     def actionsList(self, message):
-        self.speak_dialog("actions.dialog")
+        self.speak_dialog("actions")
 
 
 def create_skill():
