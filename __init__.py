@@ -41,7 +41,7 @@ class UbuHelpSkill(MycroftSkill):
         except StopIteration:
             pass
         dialog = process.extractOne(accion, action_dialog, scorer=fuzz.ratio, score_cutoff=60)
-        self.speak(dialog)
+        print(dialog)
         self.speak_dialog(str(dialog[0]).strip())
 
 
