@@ -29,18 +29,19 @@ class UbuHelpSkill(MycroftSkill):
         it = iter(translated)
         try:
             for dialog in [
-                "send.messages.dialog",
-                "forums.dialog",
-                "calendar.events.dialog",
-                "receive.messages.dialog",
-                "course.changes.dialog",
-                "grades.dialog"
+                "send.messages",
+                "forums",
+                "calendar.events",
+                "receive.messages",
+                "course.changes",
+                "grades"
             ]:
                 action_dialog[dialog] = next(it)
                 action_dialog[dialog+" "] = next(it)
         except StopIteration:
             pass
         dialog = process.extractOne(accion, action_dialog, scorer=fuzz.ratio, score_cutoff=60)
+        self.speak(dialog)
         self.speak_dialog(str(dialog[0]).strip())
 
 
